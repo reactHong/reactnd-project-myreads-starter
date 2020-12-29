@@ -5,6 +5,26 @@ import BookShelf from './components/BookShelf';
 import './App.css'
 
 class BooksApp extends React.Component {
+
+  state = {
+    curBooks: [],
+    wantBooks: [],
+    readBooks: [],
+  }
+
+  componentDidMount() {
+    BooksAPI.getAll()
+      .then(books => {
+        //console.log("[BooksApp.componentDidMount]");
+        //console.log(books);
+        this.setState({
+          curBooks: books.filter(book => book.shelf === "currentlyReading"),
+          wantBooks: books.filter(book => book.shelf === "wantToRead"),
+          readBooks: books.filter(book => book.shelf === "read"),
+        });
+      });
+  }
+
   render() {
     return (
       <div className="app">
@@ -20,9 +40,9 @@ class BooksApp extends React.Component {
               </div>
               <div className="list-books-content">
                 <div>
-                  <BookShelf title="Currently Reading" />
-                  <BookShelf title="Want to Read" />
-                  <BookShelf title="Read" />
+                  <BookShelf title="Currently Reading" books={this.state.curBooks} />
+                  <BookShelf title="Want to Read" books={this.state.wantBooks} />
+                  <BookShelf title="Read" books={this.state.readBooks} />
                 </div>
               </div>
               <div className="open-search">
