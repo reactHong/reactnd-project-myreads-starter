@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 class Book extends Component {
   static propTypes = {
-    book: PropTypes.object,
-    onMoveTo: PropTypes.func,
+    book: PropTypes.object.isRequired,
+    onMoveTo: PropTypes.func.isRequired,
   }
   
   handleChange = (e) => {
@@ -19,16 +19,26 @@ class Book extends Component {
 
   render() {
     const book = this.props.book;
-    const imageURL = `url(${book.imageLinks.thumbnail})`;
-    // console.log(book);
+    const title = book.title;
+    const authors = book.authors ? book.authors.join(", ") : "No Author";
+    const bookshelf = book.shelf ? book.shelf : "none";
+    let imageURL = "";
+    if (book.imageLinks) {
+      imageURL = book.imageLinks.thumbnail ? 
+                        `url(${book.imageLinks.thumbnail})` :
+                        book.imageLinks.smallThumbnail ? 
+                          `url(${book.imageLinks.smallThumbnail})` : "";
+    }
 
+    // console.log(book);
+    // console.log(book.title, book.authors);
     return(
       <li>
         <div className="book">
           <div className="book-top">
             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: imageURL }}></div>
             <div className="book-shelf-changer">
-              <select value={book.shelf} onChange={this.handleChange}>
+              <select value={bookshelf} onChange={this.handleChange}>
                 <option value="move" disabled>Move to...</option>
                 <option value="currentlyReading">Currently Reading</option>
                 <option value="wantToRead">Want to Read</option>
@@ -37,8 +47,8 @@ class Book extends Component {
               </select>
             </div>
           </div>
-          <div className="book-title">{book.title}</div>
-          <div className="book-authors">{book.authors.join(", ")}</div>
+          <div className="book-title">{title}</div>
+          <div className="book-authors">{authors}</div>
         </div>
       </li>
     );
