@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Book from './Book';
 
 class BookShelf extends Component {
+  static propTypes = {
+    title: PropTypes.string,
+    onMoveTo: PropTypes.func,
+  }
+  
   render() {
     return(
       <div className="bookshelf">

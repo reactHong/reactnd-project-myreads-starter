@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Book extends Component {
-
+  static propTypes = {
+    book: PropTypes.object,
+    onMoveTo: PropTypes.func,
+  }
+  
   handleChange = (e) => {
     console.log("[Book.handleChange]");
     console.log(e.target.value);
