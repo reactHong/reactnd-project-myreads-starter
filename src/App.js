@@ -19,8 +19,6 @@ class BooksApp extends React.Component {
   componentDidMount() {
     BooksAPI.getAll()
       .then(books => {
-        console.log("[BooksApp.getAll] completed!");
-        //console.log(books);
         this.setState({
           currentlyReading: books.filter(book => book.shelf === "currentlyReading"),
           wantToRead: books.filter(book => book.shelf === "wantToRead"),
@@ -31,9 +29,7 @@ class BooksApp extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log("[App.shouldComponentUpdate] selectedFromSearch:", nextState.isSelectedFromSearch);
     if (nextState.isSelectedFromSearch) {
-      console.log("[App.shouldComponentUpdate] No rendering!!");
       return false;
     }
     return true;
@@ -41,7 +37,6 @@ class BooksApp extends React.Component {
 
   moveTo = (book, fromShelf, toShelf) => {
     const bookid = book.id;
-    console.log(bookid, fromShelf, toShelf);
 
     if (fromShelf !== toShelf) {
       let isSelectedFromSearch = false;
@@ -67,20 +62,18 @@ class BooksApp extends React.Component {
       }, () => {
         BooksAPI.update(book, toShelf)
         .then(result => {
-          console.log("update");
-          console.log(result);
-          
           //TODO: Check if client and server are synchronized. If they are not same, rollback?
           const currentlyReadingIds = this.state.currentlyReading.map(book => book.id);
           const wantoReadIds = this.state.wantToRead.map(book => book.id);
           const readIds = this.state.read.map(book => book.id);
           // currentlyReadingIds[0] = "1111";
-          const debugObject = {
-            currentlyReading: currentlyReadingIds,
-            read: readIds,
-            wantoRead: wantoReadIds,
-          };
-          console.log(debugObject);
+          // const debugObject = {
+          //   currentlyReading: currentlyReadingIds,
+          //   read: readIds,
+          //   wantoRead: wantoReadIds,
+          // };
+          // console.log(result);
+          // console.log(debugObject);
 
           if (!Util.isSameArray(result.currentlyReading, currentlyReadingIds)
             || !Util.isSameArray(result.wantToRead, wantoReadIds)
@@ -105,7 +98,6 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    console.log("[App.render] isSelectedFromSearch", this.state.isSelectedFromSearch);
     return (
       <div className="app">
           <Route path="/search" render={() => (

@@ -13,13 +13,10 @@ class Book extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log("\n[Book.getDerivedStateFromProps] nextProps.book.shelf", nextProps.book.shelf, nextProps.book.id);
-
     let shelf = nextProps.book.shelf;
     if (!shelf && nextProps.onFindShelf) {
       shelf = nextProps.onFindShelf(nextProps.book.id);
     }
-
     return {
       shelf: shelf,
     };
@@ -34,12 +31,10 @@ class Book extends Component {
   }
 
   changeShelf = (e) => {
-    console.log("[Book.changeShelf]");
-    console.log(e.target.value);
-    
     const copiedBook = JSON.parse(JSON.stringify(this.props.book));
     const fromShelf = this.state.shelf;
     const toShelf = e.target.value;
+
     this.props.onMoveTo(copiedBook, fromShelf, toShelf);
     this.setState({ shelf: toShelf });
   }
@@ -55,8 +50,6 @@ class Book extends Component {
                         book.imageLinks.smallThumbnail ? 
                           `url(${book.imageLinks.smallThumbnail})` : "";
     }
-
-    console.log(`[Book.render] ${book.title} -`, this.state.shelf, `- ${book.id}`);
     return(
       <li>
         <div className="book">

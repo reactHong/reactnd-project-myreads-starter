@@ -23,8 +23,6 @@ class SearchBooks extends Component {
       this.setState({ isLoading: true });
       BooksAPI.search(keyword)
         .then(books => {
-          console.log("[BooksAPI.search] completed!");
-          // console.log(books);
           (books.error) ? 
             this.setState({ 
               searchedBooks: [],
@@ -41,7 +39,6 @@ class SearchBooks extends Component {
   }
 
   render() {
-    console.log("[SearchBook.render]", this.state.searchedBooks);
     return(
       <div className="search-books">
         <SearchBar onChangeKeyword={this.onChangeKeyword}/>
