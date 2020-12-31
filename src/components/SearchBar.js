@@ -14,9 +14,7 @@ class SearchBar extends Component {
 
   handleChange = (e) => {
     const keyword = e.target.value;
-    if (keyword) {
-      this.props.onChangeKeyword(keyword);
-    }
+    this.props.onChangeKeyword(keyword);
     this.setState({ value: keyword });
   }
 
