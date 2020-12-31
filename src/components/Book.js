@@ -39,6 +39,7 @@ class Book extends Component {
     const fromShelf = this.state.shelf;
     const toShelf = e.target.value;
     this.props.onMoveTo(copiedBook, fromShelf, toShelf);
+    this.setState({ shelf: toShelf });
   }
 
   render() {
