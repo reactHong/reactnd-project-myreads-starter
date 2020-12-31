@@ -11,7 +11,8 @@ class BooksApp extends React.Component {
     currentlyReading: [],
     wantToRead: [],
     read: [],
-    isSelectedFromSearch: false
+    isSelectedFromSearch: false,
+    isLoading: true,
   }
 
   componentDidMount() {
@@ -23,6 +24,7 @@ class BooksApp extends React.Component {
           currentlyReading: books.filter(book => book.shelf === "currentlyReading"),
           wantToRead: books.filter(book => book.shelf === "wantToRead"),
           read: books.filter(book => book.shelf === "read"),
+          isLoading: false,
         });
       });
   }
@@ -127,9 +129,21 @@ class BooksApp extends React.Component {
               </div>
               <div className="list-books-content">
                 <div>
-                  <BookShelf title="Currently Reading" books={this.state.currentlyReading} onMoveTo={this.moveTo} />
-                  <BookShelf title="Want to Read" books={this.state.wantToRead} onMoveTo={this.moveTo} />
-                  <BookShelf title="Read" books={this.state.read} onMoveTo={this.moveTo} />
+                  <BookShelf 
+                    title="Currently Reading" 
+                    books={this.state.currentlyReading}
+                    isLoading={this.state.isLoading}
+                    onMoveTo={this.moveTo} />
+                  <BookShelf 
+                    title="Want to Read" 
+                    books={this.state.wantToRead} 
+                    isLoading={this.state.isLoading}
+                    onMoveTo={this.moveTo} />
+                  <BookShelf 
+                    title="Read" 
+                    books={this.state.read} 
+                    isLoading={this.state.isLoading}
+                    onMoveTo={this.moveTo} />
                 </div>
               </div>
               <div className="open-search">

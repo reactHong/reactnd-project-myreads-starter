@@ -124,6 +124,13 @@ button:active {
   padding: 80px 10px 20px;
 }
 
+.search-books-loading {
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* books grid */
 
 .books-grid {

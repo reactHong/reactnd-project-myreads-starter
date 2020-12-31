@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import * as BooksAPI from '../BooksAPI';
 import SearchBar from './SearchBar';
 import Book from './Book';
+import Loader from 'react-loader-spinner';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 class SearchBooks extends Component {
   
@@ -12,18 +14,26 @@ class SearchBooks extends Component {
   }
 
   state = {
-    searchedBooks: []
+    searchedBooks: [],
+    isLoading: false,
   }
 
   onChangeKeyword = (keyword) => {
     if (keyword) {
+      this.setState({ isLoading: true });
       BooksAPI.search(keyword)
         .then(books => {
           console.log("[BooksAPI.search] completed!");
           // console.log(books);
           (books.error) ? 
-            this.setState({ searchedBooks: [] }) :
-            this.setState({ searchedBooks: books });
+            this.setState({ 
+              searchedBooks: [],
+              isLoading: false,
+            }) :
+            this.setState({ 
+              searchedBooks: books,
+              isLoading: false,
+            });
         });
     } else {
       this.setState({ searchedBooks: [] });
@@ -36,17 +46,28 @@ class SearchBooks extends Component {
       <div className="search-books">
         <SearchBar onChangeKeyword={this.onChangeKeyword}/>
         <div className="search-books-results">
-          <ol className="books-grid">
-            {this.state.searchedBooks && 
-             this.state.searchedBooks.map((book, index) => (
-              <Book 
-                key={index} 
-                book={book} 
-                onMoveTo={this.props.onMoveTo}
-                onFindShelf={this.props.onFindShelf}
+          {this.state.isLoading ? 
+            (<div className="search-books-loading">
+              <Loader 
+                type="ThreeDots"
+                color="#00BFFF"
+                height={100}
+                width={100}
+                timeout={0}
               />
-            ))}
-          </ol>
+             </div>) :
+            (<ol className="books-grid">
+              {this.state.searchedBooks && 
+              this.state.searchedBooks.map((book, index) => (
+                <Book 
+                  key={index} 
+                  book={book} 
+                  onMoveTo={this.props.onMoveTo}
+                  onFindShelf={this.props.onFindShelf}
+                />
+              ))}
+            </ol>)
+          }
         </div>
       </div>
     );
