@@ -3,6 +3,7 @@ import { Link, Route } from 'react-router-dom';
 import * as BooksAPI from './BooksAPI';
 import SearchBooks from './components/SearchBook';
 import BookShelf from './components/BookShelf';
+import * as Util from './util/Util';
 import './App.css';
 
 class BooksApp extends React.Component {
@@ -34,15 +35,6 @@ class BooksApp extends React.Component {
     if (nextState.isSelectedFromSearch) {
       console.log("[App.shouldComponentUpdate] No rendering!!");
       return false;
-    }
-    return true;
-  }
-
-  //TODO: Move To Util codes
-  isSameArray = (array1, array2) => {
-    if (array1.length !== array2.length) return false;
-    for (let i=0, len=array1.length; i<len; i++) {
-      if (array1[i] !== array2[i]) return false;
     }
     return true;
   }
@@ -90,9 +82,9 @@ class BooksApp extends React.Component {
           };
           console.log(debugObject);
 
-          if (!this.isSameArray(result.currentlyReading, currentlyReadingIds)
-            || !this.isSameArray(result.wantToRead, wantoReadIds)
-            || !this.isSameArray(result.read, readIds)) {
+          if (!Util.isSameArray(result.currentlyReading, currentlyReadingIds)
+            || !Util.isSameArray(result.wantToRead, wantoReadIds)
+            || !Util.isSameArray(result.read, readIds)) {
             alert("[App.moveTo] Error: Need to rollback!!");
             return;
           }
