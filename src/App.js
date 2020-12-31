@@ -11,6 +11,7 @@ class BooksApp extends React.Component {
     currentlyReading: [],
     wantToRead: [],
     read: [],
+    isSelectedFromSearch: false
   }
 
   componentDidMount() {
@@ -24,6 +25,15 @@ class BooksApp extends React.Component {
           read: books.filter(book => book.shelf === "read"),
         });
       });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("[App.shouldComponentUpdate] selectedFromSearch:", nextState.isSelectedFromSearch);
+    if (nextState.isSelectedFromSearch) {
+      console.log("[App.shouldComponentUpdate] No rendering!!");
+      return false;
+    }
+    return true;
   }
 
   //TODO: Move To Util codes
@@ -40,6 +50,12 @@ class BooksApp extends React.Component {
     console.log(bookid, fromShelf, toShelf);
 
     if (fromShelf !== toShelf) {
+      let isSelectedFromSearch = false;
+      
+      //NOTE: Searched books doesn't have the key of object, "shelf"
+      if (!book.shelf) {
+        isSelectedFromSearch = true;
+      }
       book.shelf = toShelf;
 
       this.setState((prevState) => {
@@ -50,6 +66,7 @@ class BooksApp extends React.Component {
         }
         const toBooks = prevState[toShelf].concat(book);
         result[toShelf] = toBooks;
+        result.isSelectedFromSearch = isSelectedFromSearch;
         return result;
       }, () => {
         BooksAPI.update(book, toShelf)
@@ -92,15 +109,15 @@ class BooksApp extends React.Component {
   }
 
   render() {
-    console.log("[App.render]");
+    console.log("[App.render] isSelectedFromSearch", this.state.isSelectedFromSearch);
     return (
       <div className="app">
           <Route path="/search" render={() => (
             <SearchBooks 
               onMoveTo={this.moveTo}
               onFindShelf={this.findShelf}
-            />
-          )} />
+            />)}
+          />
           <Route exact path="/" render={() => (
             <div className="list-books">
               <div className="list-books-title">
