@@ -46,7 +46,18 @@ class SearchBooks extends Component {
       <div className="search-books">
         <SearchBar onChangeKeyword={this.onChangeKeyword}/>
         <div className="search-books-results">
-          {this.state.isLoading ? 
+          <ol className="books-grid">
+            {this.state.searchedBooks && 
+            this.state.searchedBooks.map((book, index) => (
+              <Book 
+                key={index} 
+                book={book} 
+                onMoveTo={this.props.onMoveTo}
+                onFindShelf={this.props.onFindShelf}
+              />
+            ))}
+          </ol>
+          {this.state.isLoading && 
             (<div className="search-books-loading">
               <Loader 
                 type="ThreeDots"
@@ -55,18 +66,7 @@ class SearchBooks extends Component {
                 width={100}
                 timeout={0}
               />
-             </div>) :
-            (<ol className="books-grid">
-              {this.state.searchedBooks && 
-              this.state.searchedBooks.map((book, index) => (
-                <Book 
-                  key={index} 
-                  book={book} 
-                  onMoveTo={this.props.onMoveTo}
-                  onFindShelf={this.props.onFindShelf}
-                />
-              ))}
-            </ol>)
+             </div>)
           }
         </div>
       </div>
