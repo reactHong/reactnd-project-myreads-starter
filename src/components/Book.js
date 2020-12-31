@@ -25,11 +25,13 @@ class Book extends Component {
     };
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   //TODO: Don't render if it is same book
-
-  //   return true;
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.book.id === nextProps.book.id 
+      && this.state.shelf === nextState.shelf) {
+      return false;
+    }
+    return true;
+  }
 
   changeShelf = (e) => {
     console.log("[Book.changeShelf]");
@@ -61,13 +63,13 @@ class Book extends Component {
           <div className="book-top">
             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: imageURL }}></div>
             <div className="book-shelf-changer">
-            <select value={this.state.shelf} onChange={this.changeShelf}>
-              <option value="move" disabled>Move to...</option>
-              <option value="currentlyReading">Currently Reading</option>
-              <option value="wantToRead">Want to Read</option>
-              <option value="read">Read</option>
-              <option value="none">None</option>
-            </select>
+              <select value={this.state.shelf} onChange={this.changeShelf}>
+                <option value="move" disabled>Move to...</option>
+                <option value="currentlyReading">Currently Reading</option>
+                <option value="wantToRead">Want to Read</option>
+                <option value="read">Read</option>
+                <option value="none">None</option>
+              </select>
             </div>
           </div>
           <div className="book-title">{title}</div>
