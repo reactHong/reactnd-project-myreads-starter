@@ -60,12 +60,14 @@ class BooksApp extends React.Component {
 
       this.setState((prevState) => {
         const result = {};
-        if (fromShelf) {
+        if (fromShelf && fromShelf !== "none") {
           const fromBooks = prevState[fromShelf].filter(book => book.id !== bookid);
           result[fromShelf] = fromBooks;
         }
-        const toBooks = prevState[toShelf].concat(book);
-        result[toShelf] = toBooks;
+        if (toShelf !== "none") {
+          const toBooks = prevState[toShelf].concat(book);
+          result[toShelf] = toBooks;
+        }
         result.isSelectedFromSearch = isSelectedFromSearch;
         return result;
       }, () => {
