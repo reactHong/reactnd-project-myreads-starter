@@ -1,46 +1,50 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import * as BooksAPI from '../BooksAPI';
+import SearchBar from './SearchBar';
 import Book from './Book';
 
 class SearchBooks extends Component {
   
   static propTypes = {
     onMoveTo: PropTypes.func.isRequired,
+    onFindShelf: PropTypes.func.isRequired,
   }
 
   state = {
-    value: "",
-    searchedBooks: [],
+    searchedBooks: []
   }
 
-  handleChange = (e) => {
-    const keyword = e.target.value;
+  onChangeKeyword = (keyword) => {
     if (keyword) {
       BooksAPI.search(keyword)
         .then(books => {
-          //console.log("BooksAPI.search");
-          console.log(books);
-          this.setState({ searchedBooks: books });
+          console.log("[BooksAPI.search] completed!");
+          // console.log(books);
+          (books.error) ? 
+            this.setState({ searchedBooks: [] }) :
+            this.setState({ searchedBooks: books });
         });
+    } else {
+      this.setState({ searchedBooks: [] });
     }
-    this.setState({ value: keyword });
   }
 
   render() {
+    console.log("[SearchBook.render]", this.state.searchedBooks);
     return(
       <div className="search-books">
-        <div className="search-books-bar">
-          <Link to="/"><button className="close-search">Close</button></Link>
-          <div className="search-books-input-wrapper">
-            <input type="text" placeholder="Search by title or author" value={this.state.value} onChange={this.handleChange}/>
-          </div>
-        </div>
+        <SearchBar onChangeKeyword={this.onChangeKeyword}/>
         <div className="search-books-results">
           <ol className="books-grid">
-            {this.state.searchedBooks.map((book, index) => (
-              <Book key={index} book={book} onMoveTo={this.props.onMoveTo}></Book>
+            {this.state.searchedBooks && 
+             this.state.searchedBooks.map((book, index) => (
+              <Book 
+                key={index} 
+                book={book} 
+                onMoveTo={this.props.onMoveTo}
+                onFindShelf={this.props.onFindShelf}
+              />
             ))}
           </ol>
         </div>

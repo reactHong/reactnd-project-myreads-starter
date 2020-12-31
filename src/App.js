@@ -16,7 +16,7 @@ class BooksApp extends React.Component {
   componentDidMount() {
     BooksAPI.getAll()
       .then(books => {
-        //console.log("[BooksApp.componentDidMount]");
+        console.log("[BooksApp.getAll] completed!");
         //console.log(books);
         this.setState({
           currentlyReading: books.filter(book => book.shelf === "currentlyReading"),
@@ -35,28 +35,24 @@ class BooksApp extends React.Component {
     return true;
   }
 
-  moveTo = (bookid, fromShelf, toShelf) => {
+  moveTo = (book, fromShelf, toShelf) => {
+    const bookid = book.id;
     console.log(bookid, fromShelf, toShelf);
 
     if (fromShelf !== toShelf) {
-      const books = this.state[fromShelf].filter(book => book.id === bookid);
-      if (books.length !== 1) {
-        //TODO: Error handling
-        alert("[App.moveTo] Error: Books data is not normal!! - Duplicated books exist");
-        return;
-      }
-      
-      const targetBook = books[0];
-      targetBook.shelf = toShelf;
+      book.shelf = toShelf;
+
       this.setState((prevState) => {
-        const fromBooks = prevState[fromShelf].filter(book => book.id !== bookid);
-        const toBooks = prevState[toShelf].concat(targetBook);
         const result = {};
-        result[fromShelf] = fromBooks;
+        if (fromShelf) {
+          const fromBooks = prevState[fromShelf].filter(book => book.id !== bookid);
+          result[fromShelf] = fromBooks;
+        }
+        const toBooks = prevState[toShelf].concat(book);
         result[toShelf] = toBooks;
         return result;
       }, () => {
-        BooksAPI.update(targetBook, toShelf)
+        BooksAPI.update(book, toShelf)
         .then(result => {
           console.log("update");
           console.log(result);
@@ -66,9 +62,12 @@ class BooksApp extends React.Component {
           const wantoReadIds = this.state.wantToRead.map(book => book.id);
           const readIds = this.state.read.map(book => book.id);
           // currentlyReadingIds[0] = "1111";
-          console.log(currentlyReadingIds);
-          console.log(wantoReadIds);
-          console.log(readIds);
+          const debugObject = {
+            currentlyReading: currentlyReadingIds,
+            read: readIds,
+            wantoRead: wantoReadIds,
+          };
+          console.log(debugObject);
 
           if (!this.isSameArray(result.currentlyReading, currentlyReadingIds)
             || !this.isSameArray(result.wantToRead, wantoReadIds)
@@ -81,11 +80,26 @@ class BooksApp extends React.Component {
     }
   }
 
+  findShelf = (bookid) => {
+    const books = [...this.state.currentlyReading, 
+                   ...this.state.wantToRead, 
+                   ...this.state.read];
+    const found = books.find(book => book.id === bookid);
+    if (found) {
+      return found.shelf;
+    }
+    return "none";
+  }
+
   render() {
+    console.log("[App.render]");
     return (
       <div className="app">
           <Route path="/search" render={() => (
-            <SearchBooks onMoveTo={this.moveTo}/>
+            <SearchBooks 
+              onMoveTo={this.moveTo}
+              onFindShelf={this.findShelf}
+            />
           )} />
           <Route exact path="/" render={() => (
             <div className="list-books">
