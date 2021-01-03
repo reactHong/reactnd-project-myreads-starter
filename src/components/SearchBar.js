@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import * as Util from '../util/Util';
+
+const TEST_DEBOUNCE = true;
+const TEST_THROTTLE = false;
+
+let debounceSearching;
+let throttleSearching;
 
 class SearchBar extends Component {
   
@@ -12,10 +19,36 @@ class SearchBar extends Component {
     value: "",
   }
 
+  componentDidMount() {
+    debounceSearching = Util.debounce((keyword) => {
+      this.props.onChangeKeyword(keyword);
+    }, 500);
+
+    throttleSearching = Util.throttle((keyword) => {
+      this.props.onChangeKeyword(keyword);
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    debounceSearching = null;
+    throttleSearching = null;
+  }
+
   handleChange = (e) => {
     const keyword = e.target.value;
-    this.props.onChangeKeyword(keyword);
     this.setState({ value: keyword });
+
+    if (TEST_THROTTLE) {
+      throttleSearching(keyword);
+      return;
+    }
+    debounceSearching(keyword).then(result => {
+      if (TEST_DEBOUNCE) {
+        (result) ? 
+          console.log("[debounceSearching] The function is invoked! - keyword:", keyword) :
+          console.log("[debounceSearching] The function is ignored! - keyword:", keyword);
+      } 
+    });
   }
 
   render() {
